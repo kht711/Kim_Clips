@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <script>
+            var allData;
+            window.onload = () => {
+                $.get(readParameter(), (data) => { 
+                    allData = data;
+                    readAllData(allData);
+                });
+            }
+            function readParameter() {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                let param = "";
+                if (urlParams.has('tsvFile')) {
+                    param = urlParams.get("tsvFile");
+                } else {
+                    param = "kim_clip_list_2020_12.tsv";
+                }
+                return param;
+            }
+            function readAllData(data) {
+                let dataList = data.split("\r\n");
+                let header = dataList.shift();
+                let headerList = header.split("\t");
+                let headerTr = document.createElement("tr");
+                $("#thead").append("<tr></tr>")
+                for (let i = 0; i < headerList.length; i++) {
+                    $("#thead>tr").append("<th>" + headerList[i] + "</th>")
+                }
+                for (let i = 0; i < dataList.length; i++) {
+                    if (dataList[i] == "") {
+                        continue;
+                    }
+                    $("#tbody").append("<tr></tr>")
+                    let dataLine = dataList[i].split("\t");
+                    for (let j = 0; j < dataLine.length; j++) {
+                        $("#tbody tr:last-of-type").append("<td>" + dataLine[j] + "</td>")
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <table border="1">
+            <thead id="thead">
+
+            </thead>
+            <tbody id="tbody">
+
+            </tbody>
+        </table>
+    </body>
+</html>
